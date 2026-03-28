@@ -1,0 +1,20 @@
+10:38:58 benign start
+10:40:31 benign end (1210 events)
+10:40:31 portscan start
+10:41:14 portscan end (1306 events)
+10:41:14 benign start
+10:41:38 benign end (1697 events)
+10:41:38 synflood start
+10:42:11 synflood end (807 events)
+10:42:11 benign start
+10:42:34 benign end (1971 events)
+10:42:34 exfil start
+10:43:02 exfil end (382 events)
+10:43:02 benign start
+10:43:25 benign end (2269 events)
+10:43:25 privesc start
+10:43:53 privesc end (361 events)
+10:43:53 cryptomining start
+10:44:21 cryptomining end (380 events)
+10:44:21 rootkit start
+10:44:54 rootkit end (442 events)
