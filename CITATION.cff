@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: Jangid
+    given-names: Nikhil
+  - family-names: Rajput
+    given-names: Nikhil Kumar
+  - family-names: Pathak
+    given-names: Sahil
+title: "eBPF Cross-Layer Anomaly Detection"
+version: 1.0.0
+date-released: 2026-03-28
+url: "https://github.com/Nikhil690/eBPF-Cross-Layer-Anomaly-Detection"
