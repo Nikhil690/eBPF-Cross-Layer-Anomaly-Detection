@@ -160,7 +160,8 @@ print(f"  {len(ev)} events → {len(flo)} flows across {flo['label'].nunique()} 
 # FIGURE 1 — Dataset Distribution
 # ═══════════════════════════════════════════════════════════════════════════════
 print("\n[Fig 1] Dataset distribution …")
-fig, axes = plt.subplots(1, 2, figsize=(13, 5))
+fig, axes = plt.subplots(1, 2, figsize=(15, 5),
+                         gridspec_kw={'width_ratios': [1.1, 1]})
 
 # Events per class
 ev_counts = ev['label'].value_counts().reindex(ALL_ORDER).dropna()
@@ -177,16 +178,46 @@ axes[0].set_ylim(0, ev_counts.max() * 1.18)
 axes[0].grid(axis='y', alpha=0.4)
 axes[0].spines['top'].set_visible(False); axes[0].spines['right'].set_visible(False)
 
-# Flows per class (pie)
+# Flows per class (pie) — labels outside with leader lines via legend;
+# autopct shown only for slices >= 5% to avoid cramping on tiny wedges.
 fl_counts = flo['label'].value_counts().reindex(ALL_ORDER).dropna()
 wedge_colors = [PALETTE[l] for l in fl_counts.index]
+total_flows = fl_counts.sum()
+
+# Explode small slices slightly so their edges are easier to point to
+explode = [0.06 if (v / total_flows) < 0.08 else 0.01 for v in fl_counts.values]
+
+def _autopct(pct):
+    return f'{pct:.1f}%' if pct >= 5.0 else ''
+
 wedges, texts, autotexts = axes[1].pie(
-    fl_counts.values, labels=fl_counts.index,
-    autopct='%1.1f%%', colors=wedge_colors,
-    startangle=140, pctdistance=0.82,
+    fl_counts.values,
+    explode=explode,
+    labels=None,           # labels handled by legend below
+    autopct=_autopct,
+    colors=wedge_colors,
+    startangle=140,
+    pctdistance=0.78,
     wedgeprops=dict(edgecolor='white', linewidth=1.5))
+
 for t in autotexts:
-    t.set_fontsize(9)
+    t.set_fontsize(8.5)
+    t.set_fontweight('bold')
+    t.set_color('white')
+
+# Legend with pointer lines: colored patch + "label (N flows, X%)"
+import matplotlib.patches as mpatches
+legend_handles = [
+    mpatches.Patch(facecolor=c, edgecolor='#cccccc', linewidth=0.5,
+                   label=f'{lbl}  ({v:,} · {100*v/total_flows:.1f}%)')
+    for c, lbl, v in zip(wedge_colors, fl_counts.index, fl_counts.values)
+]
+axes[1].legend(handles=legend_handles,
+               loc='center left', bbox_to_anchor=(1.02, 0.5),
+               fontsize=8.5, frameon=True, framealpha=0.95,
+               edgecolor='#cccccc', handlelength=1.2,
+               handleheight=0.9, labelspacing=0.45,
+               title='Traffic class', title_fontsize=8.5)
 axes[1].set_title(f'Flow Distribution by Class\n(Total: {len(flo):,} flows)')
 
 fig.suptitle('eBPF-CLA Dataset Overview — sessions_merged.csv', fontweight='bold', y=1.01)
